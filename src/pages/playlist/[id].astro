@@ -1,0 +1,57 @@
+---
+// para produccion sin servidor
+// import type { GetStaticPaths } from "astro";
+import Layout from '../../layouts/Layout.astro';
+import PlaylistItemCard from '../../components/PlaylistItemCard.astro';
+import { allPlaylists , songs } from '../../lib/data';
+
+const {id} = Astro.params
+const playlist = allPlaylists.find(playlist=>playlist.id===id)
+const playListSongs = songs.filter(song=>song.albumId === playlist?.iyd)
+const artistsString = playlist?.artists.join(", ")
+
+// para produccion sin servidor
+// export function getStaticPaths(){
+// 	return allPlaylists.map((playlist)=>({
+// 		params:{
+// 			id:playlist.id,
+// 		},
+// 	}))
+// }
+---
+<Layout title="Clon Spotify">
+	<div id="playlist-container" class="r relative flex flex-col h-full transition-all overflow-x-hidden bg-zinc-900 " 
+	transition:name=`playlist ${playlist?.id} box`
+	>
+		<!-- <PageHeader /> -->
+		<header class="flex flex-row flex-start gap-8 p-8 mt-15">
+			<picture class="flex-none aspect-square w-44 h-44 rounded-mg">
+				<img src={playlist?.cover} alt={`Cover of ${playlist?.title}`} class="object-cover w-full h-full shadow-lg " transition:name=`playlist ${playlist?.id} image`>
+			</picture>
+			<div class="flex flex-col justify-between">
+				<h2 class="flex flex-1 items-end text-white">Playlist</h2>
+				<div>
+					<h1 class="title-clamp text-5xl font-bold block text-white">
+						{playlist?.title}
+						<span transition:name=`playlist ${playlist?.id} title`></span>
+					</h1>
+				</div>
+				<div class="flex flex-1 items-end">
+					<div class="text-sm text-gray-300 font-normal">
+						<div transition:name=`playlist ${playlist?.id} artists`>
+							<span>{artistsString}</span>
+						</div>
+						<p class="mt-1">
+							<span class="text-white">50 Canciones</span> , 3h aproximadamente
+						</p>
+					</div>
+				</div>
+			</div>
+		</header>
+		<div class="relative z-10 px-6">
+			
+		</div>
+		<div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/90 -z-10"></div>
+	</div>
+</Layout>
+
