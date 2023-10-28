@@ -1,6 +1,7 @@
 ---
 
 import type { Playlist } from "../lib/data";
+import { CardPlayButton } from "./CardPlayButton";
 interface Props {
     playlist:Playlist
 }
@@ -9,21 +10,25 @@ const {id, cover, title, artists, color} = playlist
 const artistsString = artists.join(", ")
 ---
 
-
-<a
-href=`/playlist/${id}`
-class="playlist-item flex flex-col text-zinc-200 transition-all duration-100 shadow-lg hover:shadow-xl hover:bg-zinc-800 relative p-2 overflow-hidden  gap-4 rounded-md bg-zinc-500/30 w-40 "
-transition:name=`playlist ${id} box`
->
-    <picture class="flex-none aspect-square w-full h-auto">
-        <img src={cover} alt={`Cover of ${title}`} class="object-cover w-full h-full rounded-md " transition:name=`playlist ${id} image`>
-    </picture>
-    <div class="flex flex-auto flex-col px-2 truncate">
-        <h4 transition:name=`playlist ${playlist?.id} title`>
-            {title}
-        </h4>
-        <span class="text-xs text-gray-400" transition:name=`playlist ${playlist?.id} artists`>
-            {artistsString}
-        </span>
+<article class="relative group  shadow-lg hover:shadow-xl hover:bg-zinc-800 rounded-md bg-zinc-500/30">
+    <div class="absolute right-4 bottom-10 translate-y-5 transition-all duration-500 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-10 ">
+        <CardPlayButton id={id} client:load/>
     </div>
-</a>
+    <a
+    href=`/playlist/${id}`
+    class="playlist-item flex flex-col text-zinc-200 transition-all duration-100  relative p-2 overflow-hidden pb-4  gap-4  w-36 "
+    transition:name=`playlist ${id} box`
+    >
+        <picture class="flex-none aspect-square w-full h-auto">
+            <img src={cover} alt={`Cover of ${title}`} class="object-cover w-full h-full rounded-md " transition:name=`playlist ${id} image`>
+        </picture>
+        <div class="flex flex-auto flex-col px-2 truncate">
+            <h4 class="text-sm" transition:name=`playlist ${playlist?.id} title`>
+                {title}
+            </h4>
+            <span class="text-xs text-gray-400" transition:name=`playlist ${playlist?.id} artists`>
+                {artistsString}
+            </span>
+        </div>
+    </a>
+</article>
