@@ -46,6 +46,45 @@ const CurrentSong =({image,title , artists})=>{
         </div>
     )
 }
+const SongControl = ({audio})=>{
+    const [currentTime , setCurrentTime] = useState(0)
+    const handleTimeUpdate =()=>{
+        setCurrentTime(audio.current.currentTime)
+    }
+    const duration = audio?.current?.duration 
+    useEffect(()=>{
+        audio.current.addEventListener('timeupdate',handleTimeUpdate)
+        return ()=>{
+            audio.current.removeEventListener('timeupdate',handleTimeUpdate)
+        }
+    },[])
+
+    const formatTime =(time)=>{
+        if(time==null) return '0:00'
+
+        const seconds = Math.floor(time % 60)
+        const minutes = Math.floor(time/60)
+        return(`${minutes}:${seconds.toString().padStart(2,'0')}`)
+    }
+
+    return (
+        <div className='flex gap-2 '>
+            <span className='px-1 opacity-50 w-12 text-right text-xs'>{formatTime(currentTime)}</span>
+            <Slider 
+             className="w-[350px]"
+                 defaultValue={[100]}
+                 max={audio?.current?.duration ?? 0}
+                 min={0}
+                 value={[currentTime]}
+                 onValueChange={(value)=>{
+                    const [newCurrentTime] = value
+                     audio.current.currentTime = newCurrentTime
+                 }}
+             />
+            <span className='opacity-50 text-xs'>{duration ? formatTime(duration) : '0:00'}</span>
+        </div>
+    )
+}
 
 const VolumeControl =()=>{
     const volume = usePlayerStore(state=>state.volume)
@@ -115,18 +154,19 @@ export function Player(){
     }
 
     return(
-        <div className="flex flex-row justify-between w-full min-h-[80px] items-center text-white px-4 z-50">
+        <div className="flex flex-row items-center justify-between w-full text-white px-4 z-50">
             <div> 
                 <CurrentSong {...currentMusic.song}/> 
             </div>
             <div className="grid place-content-center  gap-4 flex-1">
-                <div className="flex justify-center">
-                    <button className="bg-white rounded-full p-2" onClick={handleClick}>
+                <div className="flex flex-col items-center gap-2 justify-center">
+                    <button className="bg-white flex-0 rounded-full p-2" onClick={handleClick}>
                         {isPlaying ?  <PauseIcon /> : <PlayIcon /> }
                     </button>
+                    <SongControl audio={audioref}/>
                 </div>
             </div>
-            <div className="grid place-content-center">
+            <div className="grid  place-content-center">
                 <VolumeControl />
             </div>
 

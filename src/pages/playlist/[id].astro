@@ -4,10 +4,11 @@
 import Layout from '../../layouts/Layout.astro';
 import PlaylistItemCard from '../../components/PlaylistItemCard.astro';
 import { allPlaylists , songs } from '../../lib/data';
+import MusicsTable from '../../components/MusicsTable.astro';
 
 const {id} = Astro.params
 const playlist = allPlaylists.find(playlist=>playlist.id===id)
-const playListSongs = songs.filter(song=>song.albumId === playlist?.iyd)
+const playListSongs = songs.filter(song=>song.albumId == playlist?.id)
 const artistsString = playlist?.artists.join(", ")
 
 // para produccion sin servidor
@@ -49,9 +50,34 @@ const artistsString = playlist?.artists.join(", ")
 			</div>
 		</header>
 		<div class="relative z-10 px-6">
-			
+			<MusicsTable songs={playListSongs}/>
 		</div>
 		<div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/90 -z-10"></div>
 	</div>
 </Layout>
+<style>
+	
+#playlist-container {
+  --sb-thumb-color: #7a7a7e;
+  --sb-track-color: rgb(14, 14, 15);
+  --sb-size: 9px;
 
+  scrollbar-color: var(--sb-thumb-color) 
+                   var(--sb-track-color);
+}
+
+#playlist-container::-webkit-scrollbar {
+  width: var(--sb-size) 
+}
+
+#playlist-container::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 17px;
+}
+
+#playlist-container::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 17px;
+  
+  }
+</style>
